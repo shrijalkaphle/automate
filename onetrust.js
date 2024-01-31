@@ -99,5 +99,5 @@ for (const prefName in userPreferences) {
 
 
 // 4. Finally, click save
-const saveButton = document.querySelector(SAVE_BUTTON_SELECTOR);
-if (saveButton) saveButton.click();
+// const saveButton = document.querySelector(SAVE_BUTTON_SELECTOR);
+// if (saveButton) saveButton.click();
