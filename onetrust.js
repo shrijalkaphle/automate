@@ -2,14 +2,12 @@ console.log('start of automation')
 // Value received from server
 
 async function automate() {
-    const userPreferences = {
-        // accept_all_cookies: false,
-        // reject_all_cookies: false,
-        functionality_cookies: false,
-        performance_cookies: false,
-        strictly_necessary_cookies: false,
-        targeting_or_advertising_cookies: true,
-    }
+    const decook__userPreferences = document.getElementById('decook__userPreferences');
+    const userPreferences = JSON.parse(decook__userPreferences.value)
+    delete userPreferences.accept_all
+    delete userPreferences.reject_all
+
+    console.log(userPreferences)
 
     // dictonary 
     // This will evolve as we encounter more variations of cookeis banners
@@ -51,11 +49,10 @@ async function automate() {
         cookieSettingElem.classList.remove("ot-hide")
         await delaySeconds(3);
     }
-
     // 2. Get list of cookie preferences available, with their current state and pointer to toggle button
 
     let cookiePreferenceElem = [...document.querySelectorAll(`${COOKIE_DIALOG_SELECTOR} ${TOGGLE_PARENT_SELECTOR}`)];
-    if (cookiePreferenceElem.length > 0) {
+    if (cookiePreferenceElem.length == 0) {
         cookiePreferenceElem = [...document.querySelectorAll(`${COOKIE_DIALOG_SELECTOR} .ot-desc-cntr`)];
     }
 
@@ -63,11 +60,15 @@ async function automate() {
         let groupId = elem.getAttribute("data-optanongroupid");
         if (!groupId)
             groupId = elem.getAttribute("id").replace("ot-group-id-", "");
+        
         const toggleElem = elem.querySelector("span.ot-switch-nob");
         const inputField = elem.querySelector(`input#ot-group-id-${groupId}`);
         let state = false;
-        if (inputField && inputField.getAttribute("aria-checked"))
-            state = inputField.getAttribute("aria-checked") === "true";
+        if (inputField)
+            if(inputField.checked)
+                state = true;
+            else if(inputField.getAttribute("aria-checked") == "true")
+                state = true;
         return {
             title: elem.querySelector("span.ot-label-txt") ? elem.querySelector("span.ot-label-txt").innerText.trim().toLowerCase() : elem.innerText.trim().toLowerCase(),
             toggleElem,
@@ -76,7 +77,6 @@ async function automate() {
         }
     })
     browserCookiePreferences = browserCookiePreferences.filter(pref => pref.toggleElem !== null);
-    console.log(browserCookiePreferences)
 
     // 3. Compare browser perferences with the ones obtained from server
     for (const prefName in userPreferences) {
@@ -101,9 +101,9 @@ async function automate() {
     }
 
 
-    // // 4. Finally, click save
-    // // const saveButton = document.querySelector(SAVE_BUTTON_SELECTOR);
-    // // if (saveButton) saveButton.click();
+    // 4. Finally, click save
+    const saveButton = document.querySelector(SAVE_BUTTON_SELECTOR);
+    if (saveButton) saveButton.click();
 }
 
 
